@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.romek95a.bluetooth.MainActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Włącz bluetooth"
+            android:layout_gravity="center"
+            android:id="@+id/bWlaczBluetooth"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dołącz do gry"
+            android:layout_gravity="center"
+            android:id="@+id/bDolaczDoGry"
+            tools:text="NAD"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Utwórz nową grę"
+            android:layout_gravity="center"
+            android:id="@+id/bUtworzNowaGre"/>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
