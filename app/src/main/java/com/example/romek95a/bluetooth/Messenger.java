@@ -39,8 +39,8 @@ public class Messenger extends Activity {
         polacz=(TextView)findViewById(R.id.polacz);
         klientserwer=(TextView) findViewById(R.id.klientserwer);
         Bundle extras = getIntent().getExtras();
-        odbior.setText("Nic nie zostało odebrane");
-        wych.setText("Nic nie zostało wysłane");
+        odbior.setText("Nic nie przysłano");
+        wych.setText("Nic nie wysłano");
         if (extras != null) {
             ks = extras.getString("name");
             adres = extras.getString("adres");
