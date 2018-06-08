@@ -51,8 +51,6 @@ public class Messenger extends Activity {
             BluetoothDevice server=ba.getRemoteDevice(adres);
             final ClientBluetooth klient=new ClientBluetooth(server);
             klient.start();
-
-
             //odbieranie będąc klientem
             odbior.setText(klient.wiadPrzych);
             polacz.setText(klient.polaczono);
@@ -80,8 +78,6 @@ public class Messenger extends Activity {
             final ServerBluetooth serwer=new ServerBluetooth();
             polacz.setText(serwer.polaczono);
             serwer.start();
-
-
             //wysyłanie będąc serwerem
             wyslij.setOnClickListener(new View.OnClickListener() {
                 @Override
