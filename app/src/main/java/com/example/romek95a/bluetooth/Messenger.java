@@ -3,6 +3,7 @@ package com.example.romek95a.bluetooth;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,12 +20,11 @@ import android.widget.TextView;
 
 public class Messenger extends Activity {
     String ks="Nie wiem kim jestem xD";
-    String adres;
+    String adres, pomOdbior, pomWyslij;
     private TextView odbior;
     private TextView wych;
     private EditText wiadomosc;
     private Button wyslij;
-    private Button odbierz;
     private TextView polacz;
     private TextView klientserwer;
     String pom;
@@ -35,7 +35,6 @@ public class Messenger extends Activity {
         wych=(TextView) findViewById(R.id.wych);
         wiadomosc=(EditText) findViewById(R.id.wiadomosc);
         wyslij=(Button) findViewById(R.id.wyslij);
-        odbierz=(Button) findViewById(R.id.odbierz);
         polacz=(TextView)findViewById(R.id.polacz);
         klientserwer=(TextView) findViewById(R.id.klientserwer);
         Bundle extras = getIntent().getExtras();
@@ -54,13 +53,22 @@ public class Messenger extends Activity {
             //odbieranie będąc klientem
             odbior.setText(klient.wiadPrzych);
             polacz.setText(klient.polaczono);
-            odbierz.setOnClickListener(new View.OnClickListener() {
+
+            class AsyncSerwerOdbior extends AsyncTask<String,Void, Void>{
                 @Override
-                public void onClick(View view) {
-                    odbior.setText(klient.wiadPrzych);
-                    polacz.setText(klient.polaczono);
+                protected Void doInBackground(String... strings) {
+                    while(true){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                odbior.setText(klient.wiadPrzych);
+                            }
+                        });
+                    }
                 }
-            });
+            }
+            AsyncSerwerOdbior aso = new AsyncSerwerOdbior();
+            aso.execute();
             //wysylanie będąc klientem
             wyslij.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -90,15 +98,24 @@ public class Messenger extends Activity {
                 }
             });
             //odbieranie będąc serwerem
-            odbierz.setOnClickListener(new View.OnClickListener() {
+            //w petli
+            class AsyncSerwerOdbior extends AsyncTask<String,Void, Void>{
                 @Override
-                public void onClick(View view) {
-                    odbior.setText(serwer.wiadPrzych);
-                    Log.d("Odbior serwerem",odbior.getText().toString());
-                    polacz.setText(serwer.polaczono);
+                protected Void doInBackground(String... strings) {
+                    while(true){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                odbior.setText(serwer.wiadPrzych);
+                            }
+                        });
+                    }
                 }
-            });
-
+            }
+            AsyncSerwerOdbior aso = new AsyncSerwerOdbior();
+            aso.execute();
         }
     }
+
+
 }

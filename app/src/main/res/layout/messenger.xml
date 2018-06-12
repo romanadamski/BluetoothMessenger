@@ -43,12 +43,6 @@
                 android:text="Wyślij!"
                 android:layout_gravity="center"
                 android:id="@+id/wyslij"/>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Odbierz!"
-                android:layout_gravity="center"
-                android:id="@+id/odbierz"/>
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
