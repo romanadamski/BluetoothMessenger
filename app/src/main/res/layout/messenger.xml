@@ -1,58 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-        <TextView
+        android:gravity="center"
+        android:orientation="vertical"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
+
+        <ListView
+            android:id="@+id/messages"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Odebrano:"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15dp"
-            android:id="@+id/odbior"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="\nWysłano:"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:textSize="15dp"
-            android:id="@+id/wych"/>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:width="200px"
-            android:id="@+id/wiadomosc"/>
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="82dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/wiadomosc"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:hint="Napisz wiadomosc..."
+                android:layout_weight="1"/>
+
             <Button
+                android:id="@+id/wyslij"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wyślij!"
-                android:layout_gravity="center"
-                android:id="@+id/wyslij"/>
+                android:text="Wyślij!" />
         </LinearLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/polacz"
-            android:layout_gravity="center"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/klientserwer"
-            android:text="Null xd"/>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

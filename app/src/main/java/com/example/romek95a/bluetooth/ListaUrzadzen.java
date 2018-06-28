@@ -40,11 +40,12 @@ public class ListaUrzadzen extends Activity{
             public void onItemClick(AdapterView<?> parent, View v, int pos, long id){
                 //pobranie adresu MAC:
                 Log.d("Po wybraniu urz.:","Urzadzenie: "+urzadzeniaTab[pos]+", adres: "+adresyTab[pos]);
+                BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
+                BluetoothDevice server=ba.getRemoteDevice(adresyTab[pos]);
+                final ClientBluetooth clientBluetooth=ClientBluetooth.getInstance(server);
                 Context context;
                 context = getApplicationContext();
                 Intent intent = new Intent(context,Messenger.class);
-                String ks="Jestem klientem";
-                intent.putExtra("name", ks);
                 intent.putExtra("adres", adresyTab[pos]);
                 startActivity(intent);
             }

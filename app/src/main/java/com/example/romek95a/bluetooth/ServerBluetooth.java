@@ -16,20 +16,33 @@ import java.util.UUID;
  */
 
 public class ServerBluetooth extends Thread {
-    private BluetoothServerSocket SerwerSocket;
+    private static BluetoothServerSocket SerwerSocket;
     String wiadWych="Nic nie wysłano";
     String wiadPrzych="Nic nie przysłano";
     String polaczono="Nie polaczono";
     PrintWriter out;
-    public ServerBluetooth(){
-        BluetoothAdapter mBluetoothAdapter=BluetoothAdapter.getDefaultAdapter();
-        BluetoothServerSocket temp=null;
-        try{
-            UUID uuid=UUID.fromString("d83eac47-1eea-4654-8eca-74c691c13484");
-            temp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Usluga witajaca", uuid);
+    private static volatile ServerBluetooth instance=null;
+    private static boolean isNull=true;
+    private ServerBluetooth(){}
+    public static ServerBluetooth getInstance(){
+        if(instance == null){
+            synchronized (ServerBluetooth.class){
+                instance = new ServerBluetooth();
+                isNull=false;
+                BluetoothAdapter mBluetoothAdapter=BluetoothAdapter.getDefaultAdapter();
+                BluetoothServerSocket temp=null;
+                try{
+                    UUID uuid=UUID.fromString("d83eac47-1eea-4654-8eca-74c691c13484");
+                    temp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Usluga witajaca", uuid);
 
-        }catch(IOException e){}
-        SerwerSocket=temp;
+                }catch(IOException e){}
+                SerwerSocket=temp;
+            }
+        }
+        return instance;
+    }
+    public static boolean getIsNull(){
+        return isNull;
     }
 
     public void run(){

@@ -18,16 +18,16 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dołącz do gry"
+            android:text="Dołącz do czatu"
             android:layout_gravity="center"
-            android:id="@+id/bDolaczDoGry"
+            android:id="@+id/bDolaczDoCzatu"
             tools:text="NAD"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Utwórz nową grę"
+            android:text="Utworz nowy czat"
             android:layout_gravity="center"
-            android:id="@+id/bUtworzNowaGre"/>
+            android:id="@+id/bUtworzNowyCzat"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

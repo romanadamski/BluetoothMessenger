@@ -15,21 +15,34 @@ import java.util.UUID;
  */
 
 public class ClientBluetooth extends Thread {
-    private BluetoothSocket Socket;
-    private BluetoothDevice Device;
+    private static BluetoothSocket Socket;
+    private static BluetoothDevice Device;
     String wiadWych="Nic nie wysłano";
     String wiadPrzych="Nic nie przysłano";
     String polaczono="Nie połączono";
     PrintWriter out;
-    public ClientBluetooth(BluetoothDevice device){
-        BluetoothSocket temp = null;
-        Device = device;
-        try{
-            UUID uuid=UUID.fromString("d83eac47-1eea-4654-8eca-74c691c13484");
-            temp=device.createRfcommSocketToServiceRecord(uuid);
+    private static volatile ClientBluetooth instance=null;
+    private static boolean isNull=true;
+    private ClientBluetooth(){}
+    public static ClientBluetooth getInstance(BluetoothDevice device){
+        if(instance==null){
+            synchronized (ClientBluetooth.class){
+                instance = new ClientBluetooth();
+                isNull=false;
+                BluetoothSocket temp = null;
+                Device = device;
+                try{
+                    UUID uuid=UUID.fromString("d83eac47-1eea-4654-8eca-74c691c13484");
+                    temp=device.createRfcommSocketToServiceRecord(uuid);
 
-        }catch(Exception e){}
-        Socket =temp;
+                }catch(Exception e){}
+                Socket =temp;
+            }
+        }
+        return instance;
+    }
+    public static boolean getIsNull(){
+        return isNull;
     }
     public void run(){
         try{
