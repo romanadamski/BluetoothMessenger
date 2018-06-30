@@ -74,9 +74,11 @@ public class Messenger extends Activity {
                                     klient.wiadPrzych="";
                                 }
                             });
-                            //if od scrollowania - tylko jak przyszla wiadomosc
-                            messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                         }
+                        //if od scrollowania - tylko jak przyszla wiadomosc
+                        //(+ klawiatura)
+                        if(messages.getLastVisiblePosition()>myArrayAdapter.getCount() - 5)
+                            messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                         try {
                             Thread.sleep(200);
                         } catch (InterruptedException e) {
@@ -117,10 +119,11 @@ public class Messenger extends Activity {
                                     serwer.wiadPrzych="";
                                 }
                             });
-                            messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                         }
                         //if od scrollowania - tylko jak przyszla wiadomosc
-                        messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
+                        //(+ klawiatura)
+                        if(messages.getLastVisiblePosition()>myArrayAdapter.getCount() - 5)
+                            messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                         try {
                             Thread.sleep(200);
                         } catch (InterruptedException e) {
