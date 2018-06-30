@@ -18,12 +18,15 @@ public class ClientBluetooth extends Thread {
     private static BluetoothSocket Socket;
     private static BluetoothDevice Device;
     String wiadWych="Nic nie wysłano";
-    String wiadPrzych="Nic nie przysłano";
+    String wiadPrzych="";
     String polaczono="Nie połączono";
     PrintWriter out;
     private static volatile ClientBluetooth instance=null;
     private static boolean isNull=true;
     private ClientBluetooth(){}
+    public static BluetoothSocket getSocket() {
+        return Socket;
+    }
     public static ClientBluetooth getInstance(BluetoothDevice device){
         if(instance==null){
             synchronized (ClientBluetooth.class){

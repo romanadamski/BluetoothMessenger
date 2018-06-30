@@ -18,12 +18,16 @@ import java.util.UUID;
 public class ServerBluetooth extends Thread {
     private static BluetoothServerSocket SerwerSocket;
     String wiadWych="Nic nie wysłano";
-    String wiadPrzych="Nic nie przysłano";
+    String wiadPrzych="";
     String polaczono="Nie polaczono";
     PrintWriter out;
+    private BluetoothSocket Socket;
     private static volatile ServerBluetooth instance=null;
     private static boolean isNull=true;
     private ServerBluetooth(){}
+    public BluetoothSocket getSocket() {
+        return Socket;
+    }
     public static ServerBluetooth getInstance(){
         if(instance == null){
             synchronized (ServerBluetooth.class){
@@ -46,7 +50,7 @@ public class ServerBluetooth extends Thread {
     }
 
     public void run(){
-        BluetoothSocket Socket=null;
+        Socket=null;
         while(true) {
             try {
                 Socket = SerwerSocket.accept();

@@ -26,7 +26,8 @@ public class Messenger extends Activity {
     private Button wyslij;
     private ListView messages;
     private ArrayAdapter<String> adapter;
-    String[] tableOfMessages;
+    private MyArrayAdapter myArrayAdapter;
+    ArrayList<String> listOfMessages;
     String pom;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +35,9 @@ public class Messenger extends Activity {
         wiadomosc=(EditText) findViewById(R.id.wiadomosc);
         wyslij=(Button) findViewById(R.id.wyslij);
         messages=(ListView) findViewById(R.id.messages);
-        tableOfMessages=new String[2];
+        listOfMessages= new ArrayList<String>();
+        myArrayAdapter=new MyArrayAdapter(this,listOfMessages);
+        messages.setAdapter(myArrayAdapter);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             adres = extras.getString("adres");
@@ -53,6 +56,7 @@ public class Messenger extends Activity {
                     klient.wiadWych=pom;
                     //wych.setText(pom);
                     wiadomosc.setText("");
+                    messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                 }
             });
             //odbieranie będąc klientem
@@ -61,19 +65,23 @@ public class Messenger extends Activity {
                 @Override
                 protected Void doInBackground(String... strings) {
                     while(true){
-                        /*
-                        ArrayList<String> listOfMessages = new ArrayList<String>();
-                        listOfMessages.add(klient.wiadPrzych);
-                        */
-                        tableOfMessages[0]=klient.wiadPrzych;
-                        tableOfMessages[1]="wiadomosc";
-                        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1,tableOfMessages );
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                messages.setAdapter(adapter);
-                            }
-                        });
+                        //if od odswiezania listy
+                        if(!klient.wiadPrzych.equals("")){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    myArrayAdapter.add(klient.wiadPrzych);
+                                    klient.wiadPrzych="";
+                                }
+                            });
+                            //if od scrollowania - tylko jak przyszla wiadomosc
+                            messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
+                        }
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -91,6 +99,7 @@ public class Messenger extends Activity {
                     serwer.wiadWych=pom;
                     //wych.setText(pom);
                     wiadomosc.setText("");
+                    messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                 }
             });
             //odbieranie będąc serwerem
@@ -99,19 +108,24 @@ public class Messenger extends Activity {
                 @Override
                 protected Void doInBackground(String... strings) {
                     while(true){
-                        /*
-                        ArrayList<String> listOfMessages = new ArrayList<String>();
-                        listOfMessages.add(klient.wiadPrzych);
-                        */
-                        tableOfMessages[0]=serwer.wiadPrzych;
-                        tableOfMessages[1]="wiadomosc";
-                        adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_list_item_1,tableOfMessages );
-                        runOnUiThread(new Runnable() {
+                        //if od odswiezania listy
+                        if(!serwer.wiadPrzych.equals("")){
+                            runOnUiThread(new Runnable() {
                             @Override
-                            public void run() {
-                                messages.setAdapter(adapter);
-                            }
-                        });
+                                public void run() {
+                                    myArrayAdapter.add(serwer.wiadPrzych);
+                                    serwer.wiadPrzych="";
+                                }
+                            });
+                            messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
+                        }
+                        //if od scrollowania - tylko jak przyszla wiadomosc
+                        messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
