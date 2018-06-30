@@ -22,15 +22,18 @@ public class MyArrayAdapter extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
         String text = getItem(position);
+        TextView singleMessage;
         // Check if an existing view is being reused, otherwise inflate the view
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.message_layout, parent, false);
+        if(Messenger.inOut){
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.incoming_message_layout, parent, false);
+            singleMessage= (TextView) convertView.findViewById(R.id.singleIncomingMessage);
+            singleMessage.setText(text);
         }
-        // Lookup view for data population
-        TextView singleMessage = (TextView) convertView.findViewById(R.id.singleMessage);
-        // Populate the data into the template view using the data object
-        singleMessage.setText(text);
-        // Return the completed view to render on screen
+        else if(!Messenger.inOut){
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.outgoing_message_layout, parent, false);
+            singleMessage= (TextView) convertView.findViewById(R.id.singleOutgoingMessage);
+            singleMessage.setText(text);
+        }
         return convertView;
     }
 }

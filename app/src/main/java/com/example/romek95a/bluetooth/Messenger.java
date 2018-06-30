@@ -29,6 +29,7 @@ public class Messenger extends Activity {
     private MyArrayAdapter myArrayAdapter;
     ArrayList<String> listOfMessages;
     String pom;
+    public static boolean inOut;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messenger);
@@ -54,7 +55,8 @@ public class Messenger extends Activity {
                     pom=wiadomosc.getText().toString();
                     klient.write(pom);
                     klient.wiadWych=pom;
-                    //wych.setText(pom);
+                    inOut=false;
+                    myArrayAdapter.add(pom);
                     wiadomosc.setText("");
                     messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                 }
@@ -70,6 +72,7 @@ public class Messenger extends Activity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    inOut=true;
                                     myArrayAdapter.add(klient.wiadPrzych);
                                     klient.wiadPrzych="";
                                 }
@@ -99,7 +102,8 @@ public class Messenger extends Activity {
                     pom=wiadomosc.getText().toString();
                     serwer.write(pom);
                     serwer.wiadWych=pom;
-                    //wych.setText(pom);
+                    inOut=false;
+                    myArrayAdapter.add(pom);
                     wiadomosc.setText("");
                     messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                 }
@@ -115,6 +119,7 @@ public class Messenger extends Activity {
                             runOnUiThread(new Runnable() {
                             @Override
                                 public void run() {
+                                    inOut=true;
                                     myArrayAdapter.add(serwer.wiadPrzych);
                                     serwer.wiadPrzych="";
                                 }
