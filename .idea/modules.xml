@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bluetooth.iml" filepath="$PROJECT_DIR$/bluetooth.iml" />
+      <module fileurl="file://D:\Pulpit\bluetooth1\bluetooth.iml" filepath="D:\Pulpit\bluetooth1\bluetooth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bluetooth1.iml" filepath="$PROJECT_DIR$/bluetooth1.iml" />
     </modules>
   </component>
 </project>

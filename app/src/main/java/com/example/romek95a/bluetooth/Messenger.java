@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by romek95a on 15.05.2018.
@@ -37,6 +38,7 @@ public class Messenger extends Activity {
         wyslij=(Button) findViewById(R.id.wyslij);
         messages=(ListView) findViewById(R.id.messages);
         listOfMessages= new ArrayList<String>();
+
         myArrayAdapter=new MyArrayAdapter(this,listOfMessages);
         messages.setAdapter(myArrayAdapter);
         Bundle extras = getIntent().getExtras();
