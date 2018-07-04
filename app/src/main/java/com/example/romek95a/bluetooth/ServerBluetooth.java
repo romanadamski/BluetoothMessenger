@@ -76,6 +76,5 @@ public class ServerBluetooth extends Thread {
     }
     public void write(String wiadomosc){
         out.println(wiadomosc);
-        Log.d("Write serwer",wiadomosc);
     }
 }

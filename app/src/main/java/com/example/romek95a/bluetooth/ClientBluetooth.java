@@ -61,7 +61,6 @@ public class ClientBluetooth extends Thread {
             try{
                 BufferedReader in=new BufferedReader(new InputStreamReader(Socket.getInputStream()));
                 wiadPrzych=in.readLine();
-                Log.d("Klient",wiadPrzych);
             }catch (Exception e){
 
             }
@@ -69,6 +68,5 @@ public class ClientBluetooth extends Thread {
     }
     public void write(String wiadomosc){
         out.println(wiadomosc);
-        Log.d("Write klient",wiadomosc);
     }
 }

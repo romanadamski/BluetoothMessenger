@@ -25,11 +25,6 @@ public class MyArrayAdapter extends ArrayAdapter<String> {
         this.context=context;
     }
 
-    @Override
-    public Filter getFilter() {
-        return super.getFilter();
-    }
-
     ArrayList<String> list;
     Context context;
 
@@ -62,37 +57,41 @@ public class MyArrayAdapter extends ArrayAdapter<String> {
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
         int type=getItemViewType(position);
-        // Get the data item for this position
-        String text = getItem(position);
         int color=Color.BLACK;
-        // Check if an existing view is being reused, otherwise inflate the view
-        if(convertView==null){
-            viewHolder=new ViewHolder();
+        View row=convertView;
+        if(row==null){
+            System.out.println("null");
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            switch (type){
-                case 0:
-                    convertView = inflater.inflate(R.layout.outgoing_message_layout, parent, false);
-                    viewHolder.textView= (TextView) convertView.findViewById(R.id.singleOutgoingMessage);
-                    color=Color.GREEN;
-                    break;
-                case 1:
-                    convertView = inflater.inflate(R.layout.incoming_message_layout, parent, false);
-                    viewHolder.textView= (TextView) convertView.findViewById(R.id.singleIncomingMessage);
-                    color=Color.RED;
-                    break;
+            if(Messenger.inOutList.get(position)==0){
+                row=inflater.inflate(R.layout.outgoing_message_layout, parent, false);
             }
-            convertView.setTag(viewHolder);
+            if(Messenger.inOutList.get(position)==1){
+                row=inflater.inflate(R.layout.incoming_message_layout, parent, false);
+            }
         }
-        else viewHolder=(ViewHolder)convertView.getTag();
         String message=getItem(position);
-        viewHolder.textView.setText(message);
-        viewHolder.textView.setTextColor(color);
+        TextView label;
+        System.out.println("inOut="+Messenger.inOutList.get(position)+", position="+position);
+        if(Messenger.inOutList.get(position)==0){
+            label=(TextView)row.findViewById(R.id.singleOutgoingMessage);
+            label.setText(message);
+            System.out.println("czyli "+0);
+        }
+        if(Messenger.inOutList.get(position)==1){
+            label=(TextView)row.findViewById(R.id.singleIncomingMessage);
+            label.setText(message);
+            System.out.println("czyli "+1);
+        }
 
-        return convertView;
-    }
-    public class ViewHolder{
-        TextView textView;
+        /*
+        if(position%2==0){
+            color=Color.RED;
+        }
+        if(position%2==1){
+            color=Color.GREEN;
+        }
+        */
+        return row;
     }
 }
