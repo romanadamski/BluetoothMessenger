@@ -1,8 +1,12 @@
 package com.example.romek95a.bluetooth;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -93,17 +97,25 @@ public class Messenger extends Activity {
                             public boolean onTouch(View arg0, MotionEvent arg1)
                             {
                                 messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
-                                System.out.println("dupaaaaaaaaaaa");
                                 return false;
                             }
                         });
+                        //rozlaczanie
+                        if(klient.disconnect){
+                            System.out.println("faktycznie");
+                            //disconnectDialog().show();
+                            break;
+                        }
                         try {
                             Thread.sleep(200);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
+                    return null;
                 }
+            }
+            if(klient.disconnect){
             }
             AsyncOdbior asyncOdbior = new AsyncOdbior();
             asyncOdbior.execute();
@@ -151,22 +163,74 @@ public class Messenger extends Activity {
                             public boolean onTouch(View arg0, MotionEvent arg1)
                             {
                                 messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
-                                System.out.println("dupaaaaaaaaaaa");
                                 return false;
                             }
                         });
+                        if(serwer.disconnect){
+                            System.out.println("faktycznie");
+                            //disconnectDialog().show();
+                            break;
+                        }
                         try {
                             Thread.sleep(200);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
+                    return null;
                 }
+            }
+            if(serwer.disconnect){
+                disconnectDialog().show();
             }
             AsyncOdbior asyncOdbior = new AsyncOdbior();
             asyncOdbior.execute();
         }
     }
+    private Dialog backButtonDialog() {
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Wyjście");
+        dialogBuilder.setMessage("Czy na pewno chcesz wyjść?");
+        dialogBuilder.setNegativeButton("Tak", new Dialog.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //reset
+                Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName() );
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(0);
+            }
+        });
+        dialogBuilder.setPositiveButton("Nie", new Dialog.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
 
-
+            }
+        });
+        dialogBuilder.setCancelable(false);
+        return dialogBuilder.create();
+    }
+    private Dialog disconnectDialog() {
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Problem z połączeniem");
+        dialogBuilder.setMessage("Zostałeś rozłączony z drugim użytkownikiem");
+        dialogBuilder.setNegativeButton("Wróć do menu", new Dialog.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //reset
+                Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName() );
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(0);
+            }
+        });
+        dialogBuilder.setCancelable(false);
+        return dialogBuilder.create();
+    }
+    @Override
+    public void onBackPressed() {
+        backButtonDialog().show();
+    }
 }

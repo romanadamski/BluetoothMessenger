@@ -21,6 +21,7 @@ public class ClientBluetooth extends Thread {
     String wiadPrzych="";
     String polaczono="Nie połączono";
     PrintWriter out;
+    public boolean disconnect=false;
     private static volatile ClientBluetooth instance=null;
     private static boolean isNull=true;
     private ClientBluetooth(){}
@@ -55,14 +56,15 @@ public class ClientBluetooth extends Thread {
             out = new PrintWriter(Socket.getOutputStream(), true);
 
         }catch (Exception e){
-
         }
         while(true){
             try{
                 BufferedReader in=new BufferedReader(new InputStreamReader(Socket.getInputStream()));
                 wiadPrzych=in.readLine();
             }catch (Exception e){
-
+                disconnect=true;
+                System.out.println("rozlaczono");
+                break;
             }
         }
     }

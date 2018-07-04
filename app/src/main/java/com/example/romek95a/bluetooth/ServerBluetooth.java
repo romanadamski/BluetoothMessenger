@@ -21,6 +21,7 @@ public class ServerBluetooth extends Thread {
     String wiadPrzych="";
     String polaczono="Nie polaczono";
     PrintWriter out;
+    public boolean disconnect=false;
     private BluetoothSocket Socket;
     private static volatile ServerBluetooth instance=null;
     private static boolean isNull=true;
@@ -62,7 +63,6 @@ public class ServerBluetooth extends Thread {
                     break;
                 }
             } catch (IOException e) {
-
             }
         }
         while(true){
@@ -70,7 +70,9 @@ public class ServerBluetooth extends Thread {
                 BufferedReader in=new BufferedReader(new InputStreamReader(Socket.getInputStream()));
                 wiadPrzych=in.readLine();
             }catch(IOException e){
-
+                disconnect=true;
+                System.out.println("rozlaczono");
+                break;
             }
         }
     }
