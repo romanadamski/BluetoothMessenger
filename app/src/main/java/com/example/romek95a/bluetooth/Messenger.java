@@ -50,6 +50,7 @@ public class Messenger extends Activity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             adres = extras.getString("adres");
+            System.out.println("serwer odbiera "+adres);
         }
         if(!ClientBluetooth.getIsNull()){
             BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();

@@ -29,27 +29,22 @@ import java.util.Vector;
 
 public class ListaUrzadzen extends Activity{
     private ListView lv;
-    int j, rozmiar;
-    String[] urzadzeniaTab=new String[20];
-    String[] adresyTab=new String[20];
-
-    Vector<String> urzadzenia=new Vector();
-    List<String> adresy=new ArrayList();
+    ArrayList<String> listOfUsers;
+    List<String> listOfMacs;
+    private UsersAdapter usersAdapter;
 
     private void initUrzadzeniaListView(){
-        lv.setAdapter(new ArrayAdapter<String>(getBaseContext(),
-                android.R.layout.simple_list_item_1,urzadzeniaTab));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View v, int pos, long id){
                 //pobranie adresu MAC:
-                Log.d("Po wybraniu urz.:","Urzadzenie: "+urzadzeniaTab[pos]+", adres: "+adresyTab[pos]);
                 BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
-                BluetoothDevice server=ba.getRemoteDevice(adresyTab[pos]);
+                BluetoothDevice server=ba.getRemoteDevice(listOfMacs.get(pos));
                 final ClientBluetooth clientBluetooth=ClientBluetooth.getInstance(server);
                 Context context;
                 context = getApplicationContext();
                 Intent intent = new Intent(context,Messenger.class);
-                intent.putExtra("adres", adresyTab[pos]);
+                intent.putExtra("adres", listOfMacs.get(pos));
+                System.out.println("klient przekazuje "+listOfMacs.get(pos));
                 startActivity(intent);
             }
         });
@@ -57,9 +52,13 @@ public class ListaUrzadzen extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lista_urzadzen);
-        j=0;
-        wykryjInne();
+        listOfUsers=new ArrayList<>();
+        listOfMacs=new ArrayList<>();
+        usersAdapter=new UsersAdapter(this, listOfUsers);
         lv = (ListView) findViewById(R.id.list);
+        lv.setAdapter(usersAdapter);
+        initUrzadzeniaListView();
+        wykryjInne();
     }
 
     @Override
@@ -94,20 +93,13 @@ public class ListaUrzadzen extends Activity{
                     para="sparowane";
                 }
                 String nazwaPara=device.getName()+", "+para;
-                urzadzeniaTab[j]=nazwaPara;
-                adresyTab[j]=device.getAddress();
-                Log.d("Znalazlem",nazwaPara+", "+device.getAddress());
-                j++;
-                initUrzadzeniaListView();
+                usersAdapter.add(nazwaPara);
+                listOfMacs.add(device.getAddress());
             }
         }
 
     };
     void wykryjInne(){
-        for(int i=0;i<20;i++){
-            urzadzeniaTab[i]="";
-            adresyTab[i]="";
-        }
         IntentFilter iFiltr=new IntentFilter(BluetoothDevice.ACTION_FOUND);
         this.registerReceiver(odbiorca, iFiltr);
         BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
