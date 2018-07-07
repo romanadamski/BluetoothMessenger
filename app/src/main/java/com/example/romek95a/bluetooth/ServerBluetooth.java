@@ -19,7 +19,7 @@ public class ServerBluetooth extends Thread {
     private static BluetoothServerSocket SerwerSocket;
     String wiadWych="Nic nie wysłano";
     String wiadPrzych="";
-    String polaczono="Nie polaczono";
+    static String polaczono="Nie polaczono";
     PrintWriter out;
     public boolean disconnect=false;
     private BluetoothSocket Socket;

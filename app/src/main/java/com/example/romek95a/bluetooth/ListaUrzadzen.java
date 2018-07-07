@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,13 +37,13 @@ public class ListaUrzadzen extends Activity{
     private void initUrzadzeniaListView(){
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View v, int pos, long id){
-                //pobranie adresu MAC:
+                final Intent intent;
                 BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
+                //pobranie adresu MAC:
                 BluetoothDevice server=ba.getRemoteDevice(listOfMacs.get(pos));
                 final ClientBluetooth clientBluetooth=ClientBluetooth.getInstance(server);
-                Context context;
-                context = getApplicationContext();
-                Intent intent = new Intent(context,Messenger.class);
+                Context context = getApplicationContext();
+                intent = new Intent(context,Messenger.class);
                 intent.putExtra("adres", listOfMacs.get(pos));
                 System.out.println("klient przekazuje "+listOfMacs.get(pos));
                 startActivity(intent);

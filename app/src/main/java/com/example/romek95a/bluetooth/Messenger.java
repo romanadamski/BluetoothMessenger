@@ -36,6 +36,7 @@ public class Messenger extends Activity {
     ArrayList<MessageWithType> listOfMessages;
     String pom;
     public static boolean inOut;
+    Dialog isConnected;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messenger);
@@ -45,6 +46,7 @@ public class Messenger extends Activity {
         listOfMessages= new ArrayList<MessageWithType>();
         myArrayAdapter=new MyArrayAdapter(this,listOfMessages);
         messages.setAdapter(myArrayAdapter);
+        isConnected=createPlainAlertDialog();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             adres = extras.getString("adres");
@@ -74,6 +76,23 @@ public class Messenger extends Activity {
             class AsyncOdbior extends AsyncTask<String,Void, Void>{
                 @Override
                 protected Void doInBackground(String... strings) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            isConnected.show();
+                        }
+                    });
+                    while(true){
+                        if(ClientBluetooth.polaczono.equals("Połączono")){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    isConnected.hide();
+                                }
+                            });
+                            break;
+                        }
+                    }
                     while(true){
                         //if od odswiezania listy
                         if(!klient.wiadPrzych.equals("")){
@@ -100,7 +119,12 @@ public class Messenger extends Activity {
                         //rozlaczanie
                         if(klient.disconnect){
                             System.out.println("faktycznie");
-                            //disconnectDialog().show();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    disconnectDialog().show();
+                                }
+                            });
                             break;
                         }
                         try {
@@ -111,8 +135,6 @@ public class Messenger extends Activity {
                     }
                     return null;
                 }
-            }
-            if(klient.disconnect){
             }
             AsyncOdbior asyncOdbior = new AsyncOdbior();
             asyncOdbior.execute();
@@ -137,7 +159,23 @@ public class Messenger extends Activity {
             //w petli
             class AsyncOdbior extends AsyncTask<String, Void, Void> {
                 @Override
-                protected Void doInBackground(String... strings) {
+                protected Void doInBackground(String... strings) {runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        isConnected.show();
+                    }
+                });
+                    while(true){
+                        if(ServerBluetooth.polaczono.equals("Połączono")){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    isConnected.hide();
+                                }
+                            });
+                            break;
+                        }
+                    }
                     while(true){
                         //if od odswiezania listy
                         if(!serwer.wiadPrzych.equals("")){
@@ -163,7 +201,12 @@ public class Messenger extends Activity {
                         });
                         if(serwer.disconnect){
                             System.out.println("faktycznie");
-                            //disconnectDialog().show();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    disconnectDialog().show();
+                                }
+                            });
                             break;
                         }
                         try {
@@ -174,9 +217,6 @@ public class Messenger extends Activity {
                     }
                     return null;
                 }
-            }
-            if(serwer.disconnect){
-                disconnectDialog().show();
             }
             AsyncOdbior asyncOdbior = new AsyncOdbior();
             asyncOdbior.execute();
@@ -211,6 +251,24 @@ public class Messenger extends Activity {
         dialogBuilder.setTitle("Problem z połączeniem");
         dialogBuilder.setMessage("Zostałeś rozłączony z drugim użytkownikiem");
         dialogBuilder.setNegativeButton("Wróć do menu", new Dialog.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //reset
+                Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName() );
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(0);
+            }
+        });
+        dialogBuilder.setCancelable(false);
+        return dialogBuilder.create();
+    }
+    private Dialog createPlainAlertDialog() {
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Łączenie");
+        dialogBuilder.setMessage("Poczekaj na połączenie z drugim użytkownikiem");
+        dialogBuilder.setNegativeButton("Anuluj", new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 //reset

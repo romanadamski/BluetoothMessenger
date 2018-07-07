@@ -72,25 +72,11 @@ public class MainActivity extends Activity {
                     if(!serwer.isAlive()){
                         serwer.start();
                     }
-                    createPlainAlertDialog().show();
-                    class AsyncSerwer extends AsyncTask<String,Void, Void> {
-                        @Override
-                        protected Void doInBackground(String... strings) {
-                            Intent intent;
-                            while(true){
-                                if (serwer.polaczono.equals("Połączono")){
-                                    Context context;
-                                    context = getApplicationContext();
-                                    intent = new Intent(context,Messenger.class);
-                                    break;
-                                }
-                            }
-                            startActivity(intent);
-                            return null;
-                        }
-                    }
-                AsyncSerwer as = new AsyncSerwer();
-                as.execute();
+                    Intent intent;
+                    Context context;
+                    context = getApplicationContext();
+                    intent = new Intent(context,Messenger.class);
+                    startActivity(intent);
                 }
             }
         });
@@ -109,7 +95,7 @@ public class MainActivity extends Activity {
     private Dialog createPlainAlertDialog() {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Łączenie");
-        dialogBuilder.setMessage("Poczekaj na połączenie z drugim graczem");
+        dialogBuilder.setMessage("Poczekaj na połączenie z drugim użytkownikiem");
         dialogBuilder.setNegativeButton("Anuluj", new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
@@ -127,8 +113,8 @@ public class MainActivity extends Activity {
     }
     private Dialog createBluetoothMessageDialog() {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Bluetooth nie działa");
-        dialogBuilder.setMessage("Może najpierw włącz bluetooth, co?");
+        dialogBuilder.setTitle("Problem z połączeniem");
+        dialogBuilder.setMessage("Włącz bluetooth, aby nawiązać połączenie");
         dialogBuilder.setNegativeButton("OK", new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {

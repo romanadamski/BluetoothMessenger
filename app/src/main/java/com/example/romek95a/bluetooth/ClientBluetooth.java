@@ -19,7 +19,7 @@ public class ClientBluetooth extends Thread {
     private static BluetoothDevice Device;
     String wiadWych="Nic nie wysłano";
     String wiadPrzych="";
-    String polaczono="Nie połączono";
+    static String polaczono="Nie połączono";
     PrintWriter out;
     public boolean disconnect=false;
     private static volatile ClientBluetooth instance=null;
