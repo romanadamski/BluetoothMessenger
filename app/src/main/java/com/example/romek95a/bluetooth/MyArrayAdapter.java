@@ -18,14 +18,16 @@ import static android.graphics.Color.GREEN;
  * Created by romek95a on 30.06.2018.
  */
 
-public class MyArrayAdapter extends ArrayAdapter<String> {
-    public MyArrayAdapter(Context context, ArrayList<String> list) {
+public class MyArrayAdapter extends ArrayAdapter<MessageWithType> {
+    public MyArrayAdapter(Context context, ArrayList<MessageWithType> list) {
         super(context, 0, list);
         this.list =list;
         this.context=context;
     }
+    public static final int TYPE_OUT = 0;
+    public static final int TYPE_IN = 1;
 
-    ArrayList<String> list;
+    ArrayList<MessageWithType> list;
     Context context;
 
     @Override
@@ -34,7 +36,7 @@ public class MyArrayAdapter extends ArrayAdapter<String> {
     }
 
     @Override
-    public String getItem(int position) {
+    public MessageWithType getItem(int position) {
         return list.get(position);
     }
 
@@ -44,7 +46,7 @@ public class MyArrayAdapter extends ArrayAdapter<String> {
     }
     @Override
     public int getItemViewType(int position) {
-        if(Messenger.inOut){
+        if(list.get(position).inOut){
             return 1;
         }
         else{
@@ -57,41 +59,33 @@ public class MyArrayAdapter extends ArrayAdapter<String> {
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        MessageWithType item=getItem(position);
         int type=getItemViewType(position);
-        int color=Color.BLACK;
         View row=convertView;
+        ViewHolder viewHolder=null;
         if(row==null){
-            System.out.println("null");
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            if(Messenger.inOutList.get(position)==0){
+            if(type==TYPE_OUT){
                 row=inflater.inflate(R.layout.outgoing_message_layout, parent, false);
             }
-            if(Messenger.inOutList.get(position)==1){
+            if(type==TYPE_IN){
                 row=inflater.inflate(R.layout.incoming_message_layout, parent, false);
             }
+            TextView label=(TextView)row.findViewById(R.id.singleMessage);
+            viewHolder=new ViewHolder(label);
+            row.setTag(viewHolder);
         }
-        String message=getItem(position);
-        TextView label;
-        System.out.println("inOut="+Messenger.inOutList.get(position)+", position="+position);
-        if(Messenger.inOutList.get(position)==0){
-            label=(TextView)row.findViewById(R.id.singleOutgoingMessage);
-            label.setText(message);
-            System.out.println("czyli "+0);
+        else{
+            viewHolder=(ViewHolder)row.getTag();
         }
-        if(Messenger.inOutList.get(position)==1){
-            label=(TextView)row.findViewById(R.id.singleIncomingMessage);
-            label.setText(message);
-            System.out.println("czyli "+1);
-        }
+        viewHolder.textView.setText(item.message);
 
-        /*
-        if(position%2==0){
-            color=Color.RED;
-        }
-        if(position%2==1){
-            color=Color.GREEN;
-        }
-        */
         return row;
+    }
+    public class ViewHolder{
+        TextView textView;
+        public ViewHolder(TextView textView){
+            this.textView=textView;
+        }
     }
 }

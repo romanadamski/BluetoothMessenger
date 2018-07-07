@@ -33,8 +33,7 @@ public class Messenger extends Activity {
     private ListView messages;
     private ArrayAdapter<String> adapter;
     private MyArrayAdapter myArrayAdapter;
-    ArrayList<String> listOfMessages;
-    static ArrayList<Integer> inOutList;
+    ArrayList<MessageWithType> listOfMessages;
     String pom;
     public static boolean inOut;
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +42,7 @@ public class Messenger extends Activity {
         wiadomosc=(EditText) findViewById(R.id.wiadomosc);
         wyslij=(Button) findViewById(R.id.wyslij);
         messages=(ListView) findViewById(R.id.messages);
-        listOfMessages= new ArrayList<String>();
-        inOutList=new ArrayList<>();
+        listOfMessages= new ArrayList<MessageWithType>();
         myArrayAdapter=new MyArrayAdapter(this,listOfMessages);
         messages.setAdapter(myArrayAdapter);
         Bundle extras = getIntent().getExtras();
@@ -65,8 +63,7 @@ public class Messenger extends Activity {
                     if(!pom.equals("")){
                         klient.write(pom);
                         klient.wiadWych=pom;
-                        inOutList.add(0);
-                        myArrayAdapter.add(pom);
+                        myArrayAdapter.add(new MessageWithType(pom, false));
                         wiadomosc.setText("");
                         messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                     }
@@ -83,8 +80,7 @@ public class Messenger extends Activity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    myArrayAdapter.add(klient.wiadPrzych);
-                                    inOutList.add(1);
+                                    myArrayAdapter.add(new MessageWithType(klient.wiadPrzych, true));
                                     klient.wiadPrzych="";
                                 }
                             });
@@ -131,8 +127,7 @@ public class Messenger extends Activity {
                     if(!pom.equals("")){
                         serwer.write(pom);
                         serwer.wiadWych=pom;
-                        inOutList.add(0);
-                        myArrayAdapter.add(pom);
+                        myArrayAdapter.add(new MessageWithType(pom, false));
                         wiadomosc.setText("");
                         messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                     }
@@ -149,8 +144,7 @@ public class Messenger extends Activity {
                             runOnUiThread(new Runnable() {
                             @Override
                                 public void run() {
-                                    myArrayAdapter.add(serwer.wiadPrzych);
-                                    inOutList.add(1);
+                                    myArrayAdapter.add(new MessageWithType(serwer.wiadPrzych, true));
                                     serwer.wiadPrzych="";
                                 }
                             });
