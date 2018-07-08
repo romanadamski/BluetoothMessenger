@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
     Button bWlaczBluetooth;
     Button bDolaczDoCzatu;
     Button bUtworzNowyCzat;
+    Button bWybierzJezyk;
     private TextView klientserwer;
     BluetoothAdapter ba;
     @Override
@@ -39,13 +40,14 @@ public class MainActivity extends Activity {
         bWlaczBluetooth=(Button) findViewById(R.id.bWlaczBluetooth);
         bDolaczDoCzatu=(Button) findViewById(R.id.bDolaczDoCzatu);
         bUtworzNowyCzat=(Button) findViewById(R.id.bUtworzNowyCzat);
+        bWybierzJezyk=(Button) findViewById(R.id.bWybierzJezyk);
+        ba =BluetoothAdapter.getDefaultAdapter();
         bWlaczBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 wlaczBluetooth();
             }
         });
-        ba =BluetoothAdapter.getDefaultAdapter();
 
         bDolaczDoCzatu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +63,7 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
         bUtworzNowyCzat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,6 +83,16 @@ public class MainActivity extends Activity {
                 }
             }
         });
+        bWybierzJezyk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent;
+                Context context;
+                context = getApplicationContext();
+                intent = new Intent(context,Languages.class);
+                startActivity(intent);
+            }
+        });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent i){
@@ -94,9 +107,9 @@ public class MainActivity extends Activity {
     }
     private Dialog createPlainAlertDialog() {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Łączenie");
-        dialogBuilder.setMessage("Poczekaj na połączenie z drugim użytkownikiem");
-        dialogBuilder.setNegativeButton("Anuluj", new Dialog.OnClickListener() {
+        dialogBuilder.setTitle(getResources().getString(R.string.loading));
+        dialogBuilder.setMessage(getResources().getString(R.string.connecting));
+        dialogBuilder.setNegativeButton(getResources().getString(R.string.cancel), new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 //reset
@@ -113,9 +126,9 @@ public class MainActivity extends Activity {
     }
     private Dialog createBluetoothMessageDialog() {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Problem z połączeniem");
-        dialogBuilder.setMessage("Włącz bluetooth, aby nawiązać połączenie");
-        dialogBuilder.setNegativeButton("OK", new Dialog.OnClickListener() {
+        dialogBuilder.setTitle(getResources().getString(R.string.not_enable));
+        dialogBuilder.setMessage(getResources().getString(R.string.please_enable));
+        dialogBuilder.setNegativeButton(getResources().getString(R.string.ok), new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 //w sumie to nic nie musi robić

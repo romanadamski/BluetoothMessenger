@@ -37,6 +37,7 @@ public class ListaUrzadzen extends Activity{
     private void initUrzadzeniaListView(){
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View v, int pos, long id){
+
                 final Intent intent;
                 BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
                 //pobranie adresu MAC:
@@ -88,10 +89,10 @@ public class ListaUrzadzen extends Activity{
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String para="";
                 if(device.getBondState()!=BluetoothDevice.BOND_BONDED){
-                    para="niesparowane";
+                    para=getResources().getString(R.string.not_paired);
                 }
                 else{
-                    para="sparowane";
+                    para=getResources().getString(R.string.paired);
                 }
                 String nazwaPara=device.getName()+", "+para;
                 usersAdapter.add(nazwaPara);
@@ -106,4 +107,5 @@ public class ListaUrzadzen extends Activity{
         BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
         ba.startDiscovery();
     }
+    //jesli niesparowane
 }

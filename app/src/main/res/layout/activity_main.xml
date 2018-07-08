@@ -12,22 +12,27 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Włącz bluetooth"
+            android:text="@string/enable_bluetooth"
             android:layout_gravity="center"
             android:id="@+id/bWlaczBluetooth"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dołącz do czatu"
+            android:text="@string/join_chat"
             android:layout_gravity="center"
-            android:id="@+id/bDolaczDoCzatu"
-            tools:text="NAD"/>
+            android:id="@+id/bDolaczDoCzatu"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Utworz nowy czat"
+            android:text="@string/create_new_chat"
             android:layout_gravity="center"
             android:id="@+id/bUtworzNowyCzat"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/language"
+            android:layout_gravity="center"
+            android:id="@+id/bWybierzJezyk"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

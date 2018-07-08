@@ -224,9 +224,9 @@ public class Messenger extends Activity {
     }
     private Dialog backButtonDialog() {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Wyjście");
-        dialogBuilder.setMessage("Czy na pewno chcesz wyjść?");
-        dialogBuilder.setNegativeButton("Tak", new Dialog.OnClickListener() {
+        dialogBuilder.setTitle(getResources().getString(R.string.quit));
+        dialogBuilder.setMessage(getResources().getString(R.string.sure));
+        dialogBuilder.setNegativeButton(getResources().getString(R.string.yes), new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 //reset
@@ -237,7 +237,7 @@ public class Messenger extends Activity {
                 System.exit(0);
             }
         });
-        dialogBuilder.setPositiveButton("Nie", new Dialog.OnClickListener() {
+        dialogBuilder.setPositiveButton(getResources().getString(R.string.no), new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
 
@@ -248,9 +248,9 @@ public class Messenger extends Activity {
     }
     private Dialog disconnectDialog() {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Problem z połączeniem");
-        dialogBuilder.setMessage("Zostałeś rozłączony z drugim użytkownikiem");
-        dialogBuilder.setNegativeButton("Wróć do menu", new Dialog.OnClickListener() {
+        dialogBuilder.setTitle(getResources().getString(R.string.problem_disconnected));
+        dialogBuilder.setMessage(getResources().getString(R.string.disconnected));
+        dialogBuilder.setNegativeButton(getResources().getString(R.string.go_to_menu), new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 //reset
@@ -266,9 +266,9 @@ public class Messenger extends Activity {
     }
     private Dialog createPlainAlertDialog() {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Łączenie");
-        dialogBuilder.setMessage("Poczekaj na połączenie z drugim użytkownikiem");
-        dialogBuilder.setNegativeButton("Anuluj", new Dialog.OnClickListener() {
+        dialogBuilder.setTitle(getResources().getString(R.string.loading));
+        dialogBuilder.setMessage(getResources().getString(R.string.connecting));
+        dialogBuilder.setNegativeButton(getResources().getString(R.string.cancel), new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 //reset

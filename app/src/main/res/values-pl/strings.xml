@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Bluetooth Messenger</string>
+
+    <string name="create_new_chat">Utwórz nowy czat</string>
+    <string name="join_chat">Dołącz do czatu</string>
+    <string name="enable_bluetooth">Włącz bluetooth</string>
+    <string name="language">Wybierz język</string>
+
+    <string name="english">Angielski</string>
+    <string name="polish">Polski</string>
+    <string name="back">Wstecz</string>
+
+    <string name="send">Wyślij</string>
+    <string name="write_message">Napisz wiadomość...</string>
+
+    <string name="paired">sparowane</string>
+    <string name="not_paired">niesparowane</string>
+
+    <string name="loading">Łączenie...</string>
+    <string name="connecting">Łączenie z drugim użytkownikiem</string>
+    <string name="cancel">Anuluj</string>
+
+    <string name="not_enable">Problem z połączeniem</string>
+    <string name="please_enable">Włącz bluetooth, aby się połączyć</string>
+    <string name="ok">OK</string>
+
+    <string name="quit">Wyjście</string>
+    <string name="sure">Czy na pewno chcesz wyjść?</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
+
+    <string name="problem_disconnected">Problem z połączeniem</string>
+    <string name="disconnected">Zostałeś rozłączony z drugim użytkownikiem</string>
+    <string name="go_to_menu">Wróć do menu</string>
+
+</resources>

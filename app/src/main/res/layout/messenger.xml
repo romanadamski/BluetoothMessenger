@@ -31,14 +31,14 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:hint="Napisz wiadomosc..."
+                android:hint="@string/write_message"
                 android:layout_weight="1"/>
 
             <Button
                 android:id="@+id/wyslij"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wyślij!" />
+                android:text="@string/send" />
         </LinearLayout>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
