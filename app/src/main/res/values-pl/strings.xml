@@ -6,6 +6,9 @@
     <string name="enable_bluetooth">Włącz bluetooth</string>
     <string name="language">Wybierz język</string>
 
+    <string name="problem_unpaired">Urządzenia są niesparowane</string>
+    <string name="info_unpaired">Sparujcie najpierw swoje urządzenia</string>
+
     <string name="english">Angielski</string>
     <string name="polish">Polski</string>
     <string name="back">Wstecz</string>

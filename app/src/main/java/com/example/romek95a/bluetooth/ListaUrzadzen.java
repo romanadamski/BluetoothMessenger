@@ -38,16 +38,21 @@ public class ListaUrzadzen extends Activity{
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View v, int pos, long id){
 
-                final Intent intent;
+                Intent intent;
                 BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
                 //pobranie adresu MAC:
                 BluetoothDevice server=ba.getRemoteDevice(listOfMacs.get(pos));
-                final ClientBluetooth clientBluetooth=ClientBluetooth.getInstance(server);
-                Context context = getApplicationContext();
-                intent = new Intent(context,Messenger.class);
-                intent.putExtra("adres", listOfMacs.get(pos));
-                System.out.println("klient przekazuje "+listOfMacs.get(pos));
-                startActivity(intent);
+                if(server.getBondState()!=BluetoothDevice.BOND_BONDED){
+                    unpaired().show();
+                }
+                else{
+                    ClientBluetooth clientBluetooth=ClientBluetooth.getInstance(server);
+                    Context context = getApplicationContext();
+                    intent = new Intent(context,Messenger.class);
+                    intent.putExtra("adres", listOfMacs.get(pos));
+                    System.out.println("klient przekazuje "+listOfMacs.get(pos));
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -107,5 +112,17 @@ public class ListaUrzadzen extends Activity{
         BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
         ba.startDiscovery();
     }
-    //jesli niesparowane
+    private Dialog unpaired() {
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle(getResources().getString(R.string.problem_unpaired));
+        dialogBuilder.setMessage(getResources().getString(R.string.info_unpaired));
+        dialogBuilder.setNegativeButton(getResources().getString(R.string.ok), new Dialog.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //reset
+            }
+        });
+        dialogBuilder.setCancelable(false);
+        return dialogBuilder.create();
+    }
 }
