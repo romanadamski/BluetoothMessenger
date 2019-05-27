@@ -10,25 +10,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by romek95a on 14.05.2018.
  */
 
-public class ListaUrzadzen extends Activity{
+public class ListOfDevices extends Activity{
     private ListView lv;
     ArrayList<String> listOfUsers;
     List<String> listOfMacs;
@@ -37,7 +31,6 @@ public class ListaUrzadzen extends Activity{
     private void initUrzadzeniaListView(){
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View v, int pos, long id){
-
                 Intent intent;
                 BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
                 //pobranie adresu MAC:
@@ -49,7 +42,8 @@ public class ListaUrzadzen extends Activity{
                     ClientBluetooth clientBluetooth=ClientBluetooth.getInstance(server);
                     Context context = getApplicationContext();
                     intent = new Intent(context,Messenger.class);
-                    intent.putExtra("adres", listOfMacs.get(pos));
+                    intent.putExtra("address", listOfMacs.get(pos));
+                    intent.putExtra("isClient", true);
                     System.out.println("klient przekazuje "+listOfMacs.get(pos));
                     startActivity(intent);
                 }
@@ -58,14 +52,14 @@ public class ListaUrzadzen extends Activity{
     }
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.lista_urzadzen);
+        setContentView(R.layout.list_of_devices);
         listOfUsers=new ArrayList<>();
         listOfMacs=new ArrayList<>();
         usersAdapter=new UsersAdapter(this, listOfUsers);
-        lv = (ListView) findViewById(R.id.list);
+        lv = (ListView) findViewById(R.id.listOfDevices);
         lv.setAdapter(usersAdapter);
         initUrzadzeniaListView();
-        wykryjInne();
+        searchDevices();
     }
 
     @Override
@@ -92,21 +86,25 @@ public class ListaUrzadzen extends Activity{
             String a=intent.getAction();
             if(BluetoothDevice.ACTION_FOUND.equals(a)){
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                String para="";
+                String pair="";
+                String name = "<unknown>";
                 if(device.getBondState()!=BluetoothDevice.BOND_BONDED){
-                    para=getResources().getString(R.string.not_paired);
+                    pair=getResources().getString(R.string.not_paired);
                 }
                 else{
-                    para=getResources().getString(R.string.paired);
+                    pair=getResources().getString(R.string.paired);
                 }
-                String nazwaPara=device.getName()+", "+para;
-                usersAdapter.add(nazwaPara);
+                String temp = device.getName();
+                if(temp != null)
+                    name = temp;
+                String namePair = name + ", "+pair;
+                usersAdapter.add(namePair);
                 listOfMacs.add(device.getAddress());
             }
         }
 
     };
-    void wykryjInne(){
+    void searchDevices(){
         IntentFilter iFiltr=new IntentFilter(BluetoothDevice.ACTION_FOUND);
         this.registerReceiver(odbiorca, iFiltr);
         BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();

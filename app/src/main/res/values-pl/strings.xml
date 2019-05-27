@@ -4,6 +4,7 @@
     <string name="create_new_chat">Utwórz nowy czat</string>
     <string name="join_chat">Dołącz do czatu</string>
     <string name="enable_bluetooth">Włącz bluetooth</string>
+    <string name="disable_bluetooth">Wyłącz bluetooth</string>
     <string name="language">Wybierz język</string>
 
     <string name="problem_unpaired">Urządzenia są niesparowane</string>

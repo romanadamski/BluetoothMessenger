@@ -16,19 +16,16 @@ import java.util.UUID;
  */
 
 public class ServerBluetooth extends Thread {
-    private static BluetoothServerSocket SerwerSocket;
-    String wiadWych="Nic nie wysłano";
-    String wiadPrzych="";
-    static String polaczono="Nie polaczono";
+    private static BluetoothServerSocket serverSocket;
+    String outputMessage ="Nic nie wysłano";
+    String incomingMessage ="";
+    static String connected ="";
     PrintWriter out;
     public boolean disconnect=false;
     private BluetoothSocket Socket;
     private static volatile ServerBluetooth instance=null;
     private static boolean isNull=true;
     private ServerBluetooth(){}
-    public BluetoothSocket getSocket() {
-        return Socket;
-    }
     public static ServerBluetooth getInstance(){
         if(instance == null){
             synchronized (ServerBluetooth.class){
@@ -41,7 +38,7 @@ public class ServerBluetooth extends Thread {
                     temp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Usluga witajaca", uuid);
 
                 }catch(IOException e){}
-                SerwerSocket=temp;
+                serverSocket =temp;
             }
         }
         return instance;
@@ -54,11 +51,11 @@ public class ServerBluetooth extends Thread {
         Socket=null;
         while(true) {
             try {
-                Socket = SerwerSocket.accept();
+                Socket = serverSocket.accept();
                 if(Socket.isConnected()){
                     out = new PrintWriter(Socket.getOutputStream(), true);
                     Log.d("Socket","Nie jest nullem");
-                    polaczono="Połączono";
+                    connected ="Connected";
                     Log.d("Info","Polaczono sie ze mna");
                     break;
                 }
@@ -68,15 +65,14 @@ public class ServerBluetooth extends Thread {
         while(true){
             try{
                 BufferedReader in=new BufferedReader(new InputStreamReader(Socket.getInputStream()));
-                wiadPrzych=in.readLine();
+                incomingMessage =in.readLine();
             }catch(IOException e){
                 disconnect=true;
-                System.out.println("rozlaczono");
                 break;
             }
         }
     }
-    public void write(String wiadomosc){
-        out.println(wiadomosc);
+    public void write(String message){
+        out.println(message);
     }
 }

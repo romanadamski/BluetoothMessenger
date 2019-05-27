@@ -9,39 +9,32 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by romek95a on 15.05.2018.
  */
 
 public class Messenger extends Activity {
-    String adres;
-    private EditText wiadomosc;
-    private Button wyslij;
+    String address;
+    private EditText singleMessage;
+    private Button sendMessage;
     private ListView messages;
-    private ArrayAdapter<String> adapter;
     private MyArrayAdapter myArrayAdapter;
     ArrayList<MessageWithType> listOfMessages;
-    String pom;
-    public static boolean inOut;
+    String temp;
     Dialog isConnected;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messenger);
-        wiadomosc=(EditText) findViewById(R.id.wiadomosc);
-        wyslij=(Button) findViewById(R.id.wyslij);
+        singleMessage =(EditText) findViewById(R.id.singleMessage);
+        sendMessage =(Button) findViewById(R.id.sendMessage);
         messages=(ListView) findViewById(R.id.messages);
         listOfMessages= new ArrayList<MessageWithType>();
         myArrayAdapter=new MyArrayAdapter(this,listOfMessages);
@@ -49,24 +42,24 @@ public class Messenger extends Activity {
         isConnected=createPlainAlertDialog();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            adres = extras.getString("adres");
-            System.out.println("serwer odbiera "+adres);
+            address = extras.getString("address");
+            System.out.println("serwer odbiera "+ address);
         }
         if(!ClientBluetooth.getIsNull()){
             BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
-            BluetoothDevice server=ba.getRemoteDevice(adres);
-            final ClientBluetooth klient=ClientBluetooth.getInstance(server);
-            klient.start();
+            BluetoothDevice server=ba.getRemoteDevice(address);
+            final ClientBluetooth client=ClientBluetooth.getInstance(server);
+            client.start();
             //wysyłanie będąc klientem
-            wyslij.setOnClickListener(new View.OnClickListener() {
+            sendMessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view){
-                    pom=wiadomosc.getText().toString();
-                    if(!pom.equals("")){
-                        klient.write(pom);
-                        klient.wiadWych=pom;
-                        myArrayAdapter.add(new MessageWithType(pom, false));
-                        wiadomosc.setText("");
+                    temp = singleMessage.getText().toString();
+                    if(!temp.equals("")){
+                        client.write(temp);
+                        client.outputMessage= temp;
+                        myArrayAdapter.add(new MessageWithType(temp, false));
+                        singleMessage.setText("");
                         messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                     }
                 }
@@ -83,7 +76,7 @@ public class Messenger extends Activity {
                         }
                     });
                     while(true){
-                        if(ClientBluetooth.polaczono.equals("Połączono")){
+                        if(ClientBluetooth.connected.equals("Connected")){
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -95,20 +88,20 @@ public class Messenger extends Activity {
                     }
                     while(true){
                         //if od odswiezania listy
-                        if(!klient.wiadPrzych.equals("")){
+                        if(!client.incomingMessage.equals("")){
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    myArrayAdapter.add(new MessageWithType(klient.wiadPrzych, true));
-                                    klient.wiadPrzych="";
+                                    myArrayAdapter.add(new MessageWithType(client.incomingMessage, true));
+                                    client.incomingMessage="";
                                 }
                             });
                         }
-                        //if od scrollowania - tylko jak przyszla wiadomosc
+                        //if od scrollowania - tylko jak przyszla singleMessage
                         //(+ klawiatura)
                         if(messages.getLastVisiblePosition()>myArrayAdapter.getCount() - 3)
                             messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
-                        wiadomosc.setOnTouchListener(new View.OnTouchListener()
+                        singleMessage.setOnTouchListener(new View.OnTouchListener()
                         {
                             public boolean onTouch(View arg0, MotionEvent arg1)
                             {
@@ -117,7 +110,7 @@ public class Messenger extends Activity {
                             }
                         });
                         //rozlaczanie
-                        if(klient.disconnect){
+                        if(client.disconnect){
                             System.out.println("faktycznie");
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -140,17 +133,17 @@ public class Messenger extends Activity {
             asyncOdbior.execute();
         }
         else if(!ServerBluetooth.getIsNull()){
-            final ServerBluetooth serwer=ServerBluetooth.getInstance();
+            final ServerBluetooth server=ServerBluetooth.getInstance();
             //wysyłanie będąc serwerem
-            wyslij.setOnClickListener(new View.OnClickListener() {
+            sendMessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view){
-                    pom=wiadomosc.getText().toString();
-                    if(!pom.equals("")){
-                        serwer.write(pom);
-                        serwer.wiadWych=pom;
-                        myArrayAdapter.add(new MessageWithType(pom, false));
-                        wiadomosc.setText("");
+                    temp = singleMessage.getText().toString();
+                    if(!temp.equals("")){
+                        server.write(temp);
+                        server.outputMessage= temp;
+                        myArrayAdapter.add(new MessageWithType(temp, false));
+                        singleMessage.setText("");
                         messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                     }
                 }
@@ -166,7 +159,7 @@ public class Messenger extends Activity {
                     }
                 });
                     while(true){
-                        if(ServerBluetooth.polaczono.equals("Połączono")){
+                        if(ServerBluetooth.connected.equals("Connected")){
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -178,20 +171,20 @@ public class Messenger extends Activity {
                     }
                     while(true){
                         //if od odswiezania listy
-                        if(!serwer.wiadPrzych.equals("")){
+                        if(!server.incomingMessage.equals("")){
                             runOnUiThread(new Runnable() {
-                            @Override
+                                @Override
                                 public void run() {
-                                    myArrayAdapter.add(new MessageWithType(serwer.wiadPrzych, true));
-                                    serwer.wiadPrzych="";
+                                    myArrayAdapter.add(new MessageWithType(server.incomingMessage, true));
+                                    server.incomingMessage="";
                                 }
                             });
                         }
-                        //if od scrollowania - tylko jak przyszla wiadomosc
+                        //if od scrollowania - tylko jak przyszla singleMessage
                         //(+ klawiatura)
                         if(messages.getLastVisiblePosition()>myArrayAdapter.getCount() - 3)
                             messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
-                        wiadomosc.setOnTouchListener(new View.OnTouchListener()
+                        singleMessage.setOnTouchListener(new View.OnTouchListener()
                         {
                             public boolean onTouch(View arg0, MotionEvent arg1)
                             {
@@ -199,7 +192,7 @@ public class Messenger extends Activity {
                                 return false;
                             }
                         });
-                        if(serwer.disconnect){
+                        if(server.disconnect){
                             System.out.println("faktycznie");
                             runOnUiThread(new Runnable() {
                                 @Override

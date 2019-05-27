@@ -8,31 +8,32 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/enable_bluetooth"
             android:layout_gravity="center"
-            android:id="@+id/bWlaczBluetooth"/>
+            android:id="@+id/bEnableBluetooth"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/join_chat"
             android:layout_gravity="center"
-            android:id="@+id/bDolaczDoCzatu"/>
+            android:id="@+id/bJoinChat"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/create_new_chat"
             android:layout_gravity="center"
-            android:id="@+id/bUtworzNowyCzat"/>
+            android:id="@+id/bCreateNewChat"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/language"
             android:layout_gravity="center"
-            android:id="@+id/bWybierzJezyk"/>
+            android:id="@+id/bChooseLanguage"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

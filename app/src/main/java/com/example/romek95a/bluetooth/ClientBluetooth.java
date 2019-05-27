@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.UUID;
@@ -17,17 +16,14 @@ import java.util.UUID;
 public class ClientBluetooth extends Thread {
     private static BluetoothSocket Socket;
     private static BluetoothDevice Device;
-    String wiadWych="Nic nie wysłano";
-    String wiadPrzych="";
-    static String polaczono="Nie połączono";
+    String outputMessage ="Nic nie wysłano";
+    String incomingMessage ="";
+    static String connected ="Nie połączono";
     PrintWriter out;
     public boolean disconnect=false;
     private static volatile ClientBluetooth instance=null;
     private static boolean isNull=true;
     private ClientBluetooth(){}
-    public static BluetoothSocket getSocket() {
-        return Socket;
-    }
     public static ClientBluetooth getInstance(BluetoothDevice device){
         if(instance==null){
             synchronized (ClientBluetooth.class){
@@ -51,7 +47,7 @@ public class ClientBluetooth extends Thread {
     public void run(){
         try{
             Socket.connect();
-            polaczono="Połączono";
+            connected ="Connected";
             Log.d("Info","Polaczylem sie");
             out = new PrintWriter(Socket.getOutputStream(), true);
 
@@ -60,15 +56,14 @@ public class ClientBluetooth extends Thread {
         while(true){
             try{
                 BufferedReader in=new BufferedReader(new InputStreamReader(Socket.getInputStream()));
-                wiadPrzych=in.readLine();
+                incomingMessage =in.readLine();
             }catch (Exception e){
                 disconnect=true;
-                System.out.println("rozlaczono");
                 break;
             }
         }
     }
-    public void write(String wiadomosc){
-        out.println(wiadomosc);
+    public void write(String message){
+        out.println(message);
     }
 }

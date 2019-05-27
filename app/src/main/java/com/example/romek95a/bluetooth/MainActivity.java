@@ -4,52 +4,43 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.AsyncTask;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
+import java.util.Locale;
 
 public class MainActivity extends Activity {
-    Button bWlaczBluetooth;
-    Button bDolaczDoCzatu;
-    Button bUtworzNowyCzat;
-    Button bWybierzJezyk;
-    private TextView klientserwer;
+    Button bEnableBluetooth;
+    Button bJoinChat;
+    Button bCreateNewChat;
+    Button bChooseLanguage;
     BluetoothAdapter ba;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        loadLocale();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bWlaczBluetooth=(Button) findViewById(R.id.bWlaczBluetooth);
-        bDolaczDoCzatu=(Button) findViewById(R.id.bDolaczDoCzatu);
-        bUtworzNowyCzat=(Button) findViewById(R.id.bUtworzNowyCzat);
-        bWybierzJezyk=(Button) findViewById(R.id.bWybierzJezyk);
+
+        bEnableBluetooth =(Button) findViewById(R.id.bEnableBluetooth);
+        bJoinChat =(Button) findViewById(R.id.bJoinChat);
+        bCreateNewChat =(Button) findViewById(R.id.bCreateNewChat);
+        bChooseLanguage =(Button) findViewById(R.id.bChooseLanguage);
         ba =BluetoothAdapter.getDefaultAdapter();
-        bWlaczBluetooth.setOnClickListener(new View.OnClickListener() {
+
+        bEnableBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                wlaczBluetooth();
+                enableBluetooth();
             }
         });
-
-        bDolaczDoCzatu.setOnClickListener(new View.OnClickListener() {
+        bJoinChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!ba.isEnabled()){
@@ -58,13 +49,13 @@ public class MainActivity extends Activity {
                 else{
                     Context context;
                     context = getApplicationContext();
-                    Intent intent = new Intent(context,ListaUrzadzen.class);
+                    Intent intent = new Intent(context,ListOfDevices.class);
                     startActivity(intent);
                 }
             }
         });
 
-        bUtworzNowyCzat.setOnClickListener(new View.OnClickListener() {
+        bCreateNewChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!ba.isEnabled()){
@@ -79,11 +70,12 @@ public class MainActivity extends Activity {
                     Context context;
                     context = getApplicationContext();
                     intent = new Intent(context,Messenger.class);
+                    intent.putExtra("isClient", false);
                     startActivity(intent);
                 }
             }
         });
-        bWybierzJezyk.setOnClickListener(new View.OnClickListener() {
+        bChooseLanguage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent;
@@ -93,6 +85,35 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
+        if(ba.isEnabled())
+            bEnableBluetooth.setText(R.string.disable_bluetooth);
+    }
+    public void loadLocale() {
+        String langPref = "Language";
+        SharedPreferences prefs = getSharedPreferences("CommonPrefs",
+                Activity.MODE_PRIVATE);
+        String language = prefs.getString(langPref, "");
+        Log.d("Pobrany jezyk: ", language);
+        changeLanguage(language);
+    }
+    public void saveLocale(String lang) {
+        String langPref = "Language";
+        SharedPreferences prefs = getSharedPreferences("CommonPrefs",
+                Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(langPref, lang);
+        editor.commit();
+    }
+    public void changeLanguage(String language){
+        if(language.equals(""))
+            return;
+        Locale locale = new Locale(language);
+        saveLocale(language);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        getBaseContext().getResources().updateConfiguration(configuration,
+                getBaseContext().getResources().getDisplayMetrics());
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent i){
@@ -100,29 +121,25 @@ public class MainActivity extends Activity {
             BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
         }
     }
-    void wlaczBluetooth(){
-        Intent pokazSie=new Intent (BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        pokazSie.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        startActivity(pokazSie);
-    }
-    private Dialog createPlainAlertDialog() {
-        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle(getResources().getString(R.string.loading));
-        dialogBuilder.setMessage(getResources().getString(R.string.connecting));
-        dialogBuilder.setNegativeButton(getResources().getString(R.string.cancel), new Dialog.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //reset
-                Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName() );
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(0);
+    void enableBluetooth(){
+        if(!ba.isEnabled()){
+            ba.enable();
+            while(true){
+                if(ba.isEnabled()){
+                    bEnableBluetooth.setText(R.string.disable_bluetooth);
+                    break;
+                }
             }
-        });
-
-        dialogBuilder.setCancelable(false);
-        return dialogBuilder.create();
+        }
+        else{
+            ba.disable();
+            while (true){
+                if(!ba.isEnabled())   {
+                    bEnableBluetooth.setText(R.string.enable_bluetooth);
+                    break;
+                }
+            }
+        }
     }
     private Dialog createBluetoothMessageDialog() {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
