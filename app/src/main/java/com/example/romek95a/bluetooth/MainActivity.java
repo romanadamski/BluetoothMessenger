@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,11 +14,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import java.util.Locale;
 
 public class MainActivity extends Activity {
-    Button bEnableBluetooth;
+    static ImageButton bToggleBluetooth;
     Button bJoinChat;
     Button bCreateNewChat;
     Button bChooseLanguage;
@@ -28,16 +30,16 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bEnableBluetooth =(Button) findViewById(R.id.bEnableBluetooth);
         bJoinChat =(Button) findViewById(R.id.bJoinChat);
         bCreateNewChat =(Button) findViewById(R.id.bCreateNewChat);
         bChooseLanguage =(Button) findViewById(R.id.bChooseLanguage);
+        bToggleBluetooth =(ImageButton) findViewById(R.id.bToggleBluetooth);
         ba =BluetoothAdapter.getDefaultAdapter();
 
-        bEnableBluetooth.setOnClickListener(new View.OnClickListener() {
+        bToggleBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                enableBluetooth();
+                toggleBluetooth();
             }
         });
         bJoinChat.setOnClickListener(new View.OnClickListener() {
@@ -86,9 +88,25 @@ public class MainActivity extends Activity {
             }
         });
         if(ba.isEnabled())
-            bEnableBluetooth.setText(R.string.disable_bluetooth);
+            bToggleBluetooth.setImageResource(R.drawable.bluetooth_image_blue);
         else
-            bEnableBluetooth.setText(R.string.enable_bluetooth);
+            bToggleBluetooth.setImageResource(R.drawable.bluetooth_image_black);
+    }
+    public static class BluetoothReceiver extends BroadcastReceiver {
+        @Override public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            int state;
+            switch (action) {
+                case BluetoothAdapter.ACTION_STATE_CHANGED:
+                    state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+                    if (state == BluetoothAdapter.STATE_ON || state == BluetoothAdapter.STATE_TURNING_OFF) {
+                        bToggleBluetooth.setImageResource(R.drawable.bluetooth_image_blue);
+                    }
+                    else if (state == BluetoothAdapter.STATE_OFF || state == BluetoothAdapter.STATE_TURNING_ON){
+                        bToggleBluetooth.setImageResource(R.drawable.bluetooth_image_black);
+                    }
+            }
+        }
     }
     public void loadLocale() {
         String langPref = "Language";
@@ -123,24 +141,12 @@ public class MainActivity extends Activity {
             BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
         }
     }
-    void enableBluetooth(){
+    void toggleBluetooth(){
         if(!ba.isEnabled()){
             ba.enable();
-            while(true){
-                if(ba.isEnabled()){
-                    bEnableBluetooth.setText(R.string.disable_bluetooth);
-                    break;
-                }
-            }
         }
         else{
             ba.disable();
-            while (true){
-                if(!ba.isEnabled())   {
-                    bEnableBluetooth.setText(R.string.enable_bluetooth);
-                    break;
-                }
-            }
         }
     }
     private Dialog createBluetoothMessageDialog() {

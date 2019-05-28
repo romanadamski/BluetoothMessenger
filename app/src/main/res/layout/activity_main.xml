@@ -10,29 +10,36 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/enable_bluetooth"
-            android:layout_gravity="center"
-            android:id="@+id/bEnableBluetooth"/>
+        <ImageButton
+            android:id="@+id/bToggleBluetooth"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:scaleType="fitXY"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/bluetooth_image_black"
+            android:background="@null"
+            />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/join_chat"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:id="@+id/bJoinChat"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/create_new_chat"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:id="@+id/bCreateNewChat"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/language"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:id="@+id/bChooseLanguage"/>
     </LinearLayout>
 
