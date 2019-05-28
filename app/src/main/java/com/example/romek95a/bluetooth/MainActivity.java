@@ -99,10 +99,10 @@ public class MainActivity extends Activity {
             switch (action) {
                 case BluetoothAdapter.ACTION_STATE_CHANGED:
                     state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
-                    if (state == BluetoothAdapter.STATE_ON || state == BluetoothAdapter.STATE_TURNING_OFF) {
+                    if (state == BluetoothAdapter.STATE_ON) {
                         bToggleBluetooth.setImageResource(R.drawable.bluetooth_image_blue);
                     }
-                    else if (state == BluetoothAdapter.STATE_OFF || state == BluetoothAdapter.STATE_TURNING_ON){
+                    else if (state == BluetoothAdapter.STATE_OFF){
                         bToggleBluetooth.setImageResource(R.drawable.bluetooth_image_black);
                     }
             }
