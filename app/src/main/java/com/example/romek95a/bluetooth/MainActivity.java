@@ -87,6 +87,8 @@ public class MainActivity extends Activity {
         });
         if(ba.isEnabled())
             bEnableBluetooth.setText(R.string.disable_bluetooth);
+        else
+            bEnableBluetooth.setText(R.string.enable_bluetooth);
     }
     public void loadLocale() {
         String langPref = "Language";

@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,6 +28,7 @@ public class ListOfDevices extends Activity{
     ArrayList<String> listOfUsers;
     List<String> listOfMacs;
     private UsersAdapter usersAdapter;
+    BluetoothAdapter ba;
 
     private void initUrzadzeniaListView(){
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -60,8 +62,28 @@ public class ListOfDevices extends Activity{
         lv.setAdapter(usersAdapter);
         initUrzadzeniaListView();
         searchDevices();
-    }
+        ba=BluetoothAdapter.getDefaultAdapter();
 
+        AsyncCheckBluetooth asyncCheckBluetooth = new AsyncCheckBluetooth();
+        asyncCheckBluetooth.execute();
+    }
+    class AsyncCheckBluetooth extends AsyncTask<String,Void, Void> {
+        @Override
+        protected Void doInBackground(String... strings) {
+            while(true) {
+                if (!ba.isEnabled()) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            lostBluetooth().show();
+                        }
+                    });
+                    break;
+                }
+            }
+            return null;
+        }
+    }
     @Override
     protected void onStop(){
         try {
@@ -122,5 +144,26 @@ public class ListOfDevices extends Activity{
         });
         dialogBuilder.setCancelable(false);
         return dialogBuilder.create();
+    }
+    private Dialog lostBluetooth(){
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle(getResources().getString(R.string.not_enable));
+        dialogBuilder.setMessage(getResources().getString(R.string.please_enable));
+        dialogBuilder.setNegativeButton(getResources().getString(R.string.ok), new Dialog.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //reset
+                resetApplication();
+            }
+        });
+        dialogBuilder.setCancelable(false);
+        return dialogBuilder.create();
+    }
+    void resetApplication(){
+        Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName() );
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
     }
 }

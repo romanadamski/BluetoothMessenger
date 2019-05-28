@@ -30,6 +30,7 @@ public class Messenger extends Activity {
     ArrayList<MessageWithType> listOfMessages;
     String temp;
     Dialog isConnected;
+    BluetoothAdapter ba;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.messenger);
@@ -41,12 +42,13 @@ public class Messenger extends Activity {
         messages.setAdapter(myArrayAdapter);
         isConnected=createPlainAlertDialog();
         Bundle extras = getIntent().getExtras();
+        ba=BluetoothAdapter.getDefaultAdapter();
+
         if (extras != null) {
             address = extras.getString("address");
             System.out.println("serwer odbiera "+ address);
         }
         if(!ClientBluetooth.getIsNull()){
-            BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice server=ba.getRemoteDevice(address);
             final ClientBluetooth client=ClientBluetooth.getInstance(server);
             client.start();
@@ -66,7 +68,7 @@ public class Messenger extends Activity {
             });
             //odbieranie będąc klientem
             //w petli
-            class AsyncOdbior extends AsyncTask<String,Void, Void>{
+            class AsyncReceive extends AsyncTask<String,Void, Void>{
                 @Override
                 protected Void doInBackground(String... strings) {
                     runOnUiThread(new Runnable() {
@@ -76,6 +78,15 @@ public class Messenger extends Activity {
                         }
                     });
                     while(true){
+                        if(!ba.isEnabled()){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    lostBluetooth().show();
+                                }
+                            });
+                            break;
+                        }
                         if(ClientBluetooth.connected.equals("Connected")){
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -129,8 +140,8 @@ public class Messenger extends Activity {
                     return null;
                 }
             }
-            AsyncOdbior asyncOdbior = new AsyncOdbior();
-            asyncOdbior.execute();
+            AsyncReceive asyncReceive = new AsyncReceive();
+            asyncReceive.execute();
         }
         else if(!ServerBluetooth.getIsNull()){
             final ServerBluetooth server=ServerBluetooth.getInstance();
@@ -150,7 +161,7 @@ public class Messenger extends Activity {
             });
             //odbieranie będąc serwerem
             //w petli
-            class AsyncOdbior extends AsyncTask<String, Void, Void> {
+            class AsyncReceive extends AsyncTask<String, Void, Void> {
                 @Override
                 protected Void doInBackground(String... strings) {runOnUiThread(new Runnable() {
                     @Override
@@ -159,6 +170,15 @@ public class Messenger extends Activity {
                     }
                 });
                     while(true){
+                        if(!ba.isEnabled()){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    lostBluetooth().show();
+                                }
+                            });
+                            break;
+                        }
                         if(ServerBluetooth.connected.equals("Connected")){
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -211,8 +231,8 @@ public class Messenger extends Activity {
                     return null;
                 }
             }
-            AsyncOdbior asyncOdbior = new AsyncOdbior();
-            asyncOdbior.execute();
+            AsyncReceive asyncReceive = new AsyncReceive();
+            asyncReceive.execute();
         }
     }
     private Dialog backButtonDialog() {
@@ -223,11 +243,7 @@ public class Messenger extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 //reset
-                Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName() );
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(0);
+                resetApplication();
             }
         });
         dialogBuilder.setPositiveButton(getResources().getString(R.string.no), new Dialog.OnClickListener() {
@@ -247,11 +263,7 @@ public class Messenger extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 //reset
-                Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName() );
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(0);
+                resetApplication();
             }
         });
         dialogBuilder.setCancelable(false);
@@ -265,15 +277,32 @@ public class Messenger extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 //reset
-                Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName() );
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(0);
+                resetApplication();
             }
         });
         dialogBuilder.setCancelable(false);
         return dialogBuilder.create();
+    }
+    private Dialog lostBluetooth(){
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle(getResources().getString(R.string.not_enable));
+        dialogBuilder.setMessage(getResources().getString(R.string.please_enable));
+        dialogBuilder.setNegativeButton(getResources().getString(R.string.ok), new Dialog.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //reset
+                resetApplication();
+            }
+        });
+        dialogBuilder.setCancelable(false);
+        return dialogBuilder.create();
+    }
+    void resetApplication(){
+        Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName() );
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
     }
     @Override
     public void onBackPressed() {
