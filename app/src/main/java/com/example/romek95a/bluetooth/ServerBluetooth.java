@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class ServerBluetooth extends Thread {
     private static BluetoothServerSocket serverSocket;
-    String outputMessage ="Nic nie wysłano";
+    String outputMessage ="Nothing sent";
     String incomingMessage ="";
     static String connected ="";
     PrintWriter out;
@@ -54,9 +54,7 @@ public class ServerBluetooth extends Thread {
                 Socket = serverSocket.accept();
                 if(Socket.isConnected()){
                     out = new PrintWriter(Socket.getOutputStream(), true);
-                    Log.d("Socket","Nie jest nullem");
                     connected ="Connected";
-                    Log.d("Info","Polaczono sie ze mna");
                     break;
                 }
             } catch (IOException e) {

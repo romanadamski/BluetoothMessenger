@@ -30,7 +30,7 @@ public class ListOfDevices extends Activity{
     private UsersAdapter usersAdapter;
     BluetoothAdapter ba;
 
-    private void initUrzadzeniaListView(){
+    private void initDevicesListView(){
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View v, int pos, long id){
                 Intent intent;
@@ -46,7 +46,6 @@ public class ListOfDevices extends Activity{
                     intent = new Intent(context,Messenger.class);
                     intent.putExtra("address", listOfMacs.get(pos));
                     intent.putExtra("isClient", true);
-                    System.out.println("klient przekazuje "+listOfMacs.get(pos));
                     startActivity(intent);
                 }
             }
@@ -60,7 +59,7 @@ public class ListOfDevices extends Activity{
         usersAdapter=new UsersAdapter(this, listOfUsers);
         lv = (ListView) findViewById(R.id.listOfDevices);
         lv.setAdapter(usersAdapter);
-        initUrzadzeniaListView();
+        initDevicesListView();
         searchDevices();
         ba=BluetoothAdapter.getDefaultAdapter();
 
@@ -87,7 +86,7 @@ public class ListOfDevices extends Activity{
     @Override
     protected void onStop(){
         try {
-        unregisterReceiver(odbiorca);
+        unregisterReceiver(device);
         } catch (IllegalArgumentException ex) {
         // If Receiver not registered
         }
@@ -102,7 +101,7 @@ public class ListOfDevices extends Activity{
     protected void onPause() {
         super.onPause();
     }
-    private final BroadcastReceiver odbiorca = new BroadcastReceiver() {
+    private final BroadcastReceiver device = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String a=intent.getAction();
@@ -128,7 +127,7 @@ public class ListOfDevices extends Activity{
     };
     void searchDevices(){
         IntentFilter iFiltr=new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        this.registerReceiver(odbiorca, iFiltr);
+        this.registerReceiver(device, iFiltr);
         BluetoothAdapter ba=BluetoothAdapter.getDefaultAdapter();
         ba.startDiscovery();
     }

@@ -16,9 +16,9 @@ import java.util.UUID;
 public class ClientBluetooth extends Thread {
     private static BluetoothSocket Socket;
     private static BluetoothDevice Device;
-    String outputMessage ="Nic nie wysłano";
+    String outputMessage ="Nothing sent";
     String incomingMessage ="";
-    static String connected ="Nie połączono";
+    static String connected ="";
     PrintWriter out;
     public boolean disconnect=false;
     private static volatile ClientBluetooth instance=null;
@@ -48,7 +48,6 @@ public class ClientBluetooth extends Thread {
         try{
             Socket.connect();
             connected ="Connected";
-            Log.d("Info","Polaczylem sie");
             out = new PrintWriter(Socket.getOutputStream(), true);
 
         }catch (Exception e){

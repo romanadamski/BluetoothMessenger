@@ -36,6 +36,14 @@ public class MainActivity extends Activity {
         bToggleBluetooth =(ImageButton) findViewById(R.id.bToggleBluetooth);
         ba =BluetoothAdapter.getDefaultAdapter();
 
+        setButtonFunctions();
+
+        if(ba.isEnabled())
+            bToggleBluetooth.setImageResource(R.drawable.bluetooth_image_blue);
+        else
+            bToggleBluetooth.setImageResource(R.drawable.bluetooth_image_black);
+    }
+    void setButtonFunctions(){
         bToggleBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,10 +95,6 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
-        if(ba.isEnabled())
-            bToggleBluetooth.setImageResource(R.drawable.bluetooth_image_blue);
-        else
-            bToggleBluetooth.setImageResource(R.drawable.bluetooth_image_black);
     }
     public static class BluetoothReceiver extends BroadcastReceiver {
         @Override public void onReceive(Context context, Intent intent) {
@@ -113,7 +117,6 @@ public class MainActivity extends Activity {
         SharedPreferences prefs = getSharedPreferences("CommonPrefs",
                 Activity.MODE_PRIVATE);
         String language = prefs.getString(langPref, "");
-        Log.d("Pobrany jezyk: ", language);
         changeLanguage(language);
     }
     public void saveLocale(String lang) {
@@ -156,7 +159,6 @@ public class MainActivity extends Activity {
         dialogBuilder.setNegativeButton(getResources().getString(R.string.ok), new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
-                //w sumie to nic nie musi robić
             }
         });
         dialogBuilder.setCancelable(false);

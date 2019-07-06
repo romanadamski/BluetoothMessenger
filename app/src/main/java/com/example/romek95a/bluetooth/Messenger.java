@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -46,7 +47,6 @@ public class Messenger extends Activity {
 
         if (extras != null) {
             address = extras.getString("address");
-            System.out.println("serwer odbiera "+ address);
         }
         if(!ClientBluetooth.getIsNull()){
             BluetoothDevice server=ba.getRemoteDevice(address);
@@ -98,7 +98,7 @@ public class Messenger extends Activity {
                         }
                     }
                     while(true){
-                        //if od odswiezania listy
+                        //odswiezanie listy
                         if(!client.incomingMessage.equals("")){
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -108,8 +108,7 @@ public class Messenger extends Activity {
                                 }
                             });
                         }
-                        //if od scrollowania - tylko jak przyszla singleMessage
-                        //(+ klawiatura)
+                        //przesuwanie listy do najnowszej wiadomosci
                         if(messages.getLastVisiblePosition()>myArrayAdapter.getCount() - 3)
                             messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                         singleMessage.setOnTouchListener(new View.OnTouchListener()
@@ -122,7 +121,6 @@ public class Messenger extends Activity {
                         });
                         //rozlaczanie
                         if(client.disconnect){
-                            System.out.println("faktycznie");
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -190,7 +188,7 @@ public class Messenger extends Activity {
                         }
                     }
                     while(true){
-                        //if od odswiezania listy
+                        //odswiezanie listy
                         if(!server.incomingMessage.equals("")){
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -200,8 +198,7 @@ public class Messenger extends Activity {
                                 }
                             });
                         }
-                        //if od scrollowania - tylko jak przyszla singleMessage
-                        //(+ klawiatura)
+                        //przesuwanie listy do najnowszej wiadomosci
                         if(messages.getLastVisiblePosition()>myArrayAdapter.getCount() - 3)
                             messages.smoothScrollToPosition(myArrayAdapter.getCount() - 1);
                         singleMessage.setOnTouchListener(new View.OnTouchListener()
@@ -213,7 +210,6 @@ public class Messenger extends Activity {
                             }
                         });
                         if(server.disconnect){
-                            System.out.println("faktycznie");
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
